@@ -1,16 +1,16 @@
-package org.example.service;
+package com.aston.logistictestinspring.service;
 
-import org.example.model.DriverEntity;
+
+import com.aston.logistictestinspring.model.DriverEntity;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface DriverService {
     DriverEntity save(DriverEntity driverEntity);
 
     DriverEntity findById(Integer id);
 
-    Boolean delete(Integer id);
+    void delete(Integer id);
 
     List<DriverEntity> findAll();
 }

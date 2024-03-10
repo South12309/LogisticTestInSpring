@@ -2,7 +2,8 @@ package com.aston.logistictestinspring.service.impl;
 
 import com.aston.logistictestinspring.model.ParkingEntity;
 import com.aston.logistictestinspring.repository.ParkingEntityRepository;
-import org.example.service.ParkingService;
+
+import com.aston.logistictestinspring.service.ParkingService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,7 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public ParkingEntity save(ParkingEntity parkingEntity) {
-        if (repository.findById(parkingEntity.getId()).isEmpty()) {
-            return repository.save(parkingEntity);
-        }
-        return repository.update(parkingEntity);
+        return repository.save(parkingEntity);
     }
 
     @Override
@@ -29,12 +27,12 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     @Override
-    public Boolean delete(Integer id) {
-        return repository.deleteById(id);
+    public void delete(Integer id) {
+        repository.deleteById(id);
     }
 
     @Override
     public List<ParkingEntity> findAll() {
-        return repository.findAll().orElse(null);
+        return repository.findAll();
     }
 }

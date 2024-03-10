@@ -3,17 +3,13 @@ package com.aston.logistictestinspring.service.impl;
 
 import com.aston.logistictestinspring.model.TruckEntity;
 import com.aston.logistictestinspring.repository.TruckEntityRepository;
-import org.example.service.TruckService;
+import com.aston.logistictestinspring.service.TruckService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public class TruckServiceImpl implements TruckService {
-    private TruckEntityRepository repository;
-
-    public TruckServiceImpl() {
-        repository = TruckEntityRepositoryImpl.getINSTANCE();
-    }
+    private final TruckEntityRepository repository;
 
     public TruckServiceImpl(TruckEntityRepository repository) {
         this.repository = repository;
@@ -21,10 +17,7 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     public TruckEntity save(TruckEntity truckEntity) {
-        if (repository.findById(truckEntity.getId()).isEmpty()) {
-            return repository.save(truckEntity);
-        }
-        return repository.update(truckEntity);
+        return repository.save(truckEntity);
     }
 
     @Override
@@ -33,12 +26,12 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public Boolean delete(Integer id) {
-        return repository.deleteById(id);
+    public void delete(Integer id) {
+        repository.deleteById(id);
     }
 
     @Override
     public List<TruckEntity> findAll() {
-        return repository.findAll().orElse(null);
+        return repository.findAll();
     }
 }
