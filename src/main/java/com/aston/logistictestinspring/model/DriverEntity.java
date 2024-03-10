@@ -1,13 +1,22 @@
 package com.aston.logistictestinspring.model;
 
 
+import javax.persistence.*;
 import java.util.List;
-
+@Entity
+@Table(name = "drivers")
 public class DriverEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "name")
     private String name;
+    @Column(name = "patronymic")
     private String patronymic;
+    @ManyToMany(mappedBy = "trucks")
     private List<TruckEntity> trucks;
 
     public DriverEntity() {

@@ -1,6 +1,13 @@
 package com.aston.logistictestinspring.model;
 
+
+import javax.persistence.*;
+
+@Entity
 public class DriverTruckEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
     private int driverId;
     private int truckId;

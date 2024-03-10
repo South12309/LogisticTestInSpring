@@ -1,11 +1,18 @@
 package com.aston.logistictestinspring.model;
 
+import javax.persistence.*;
 import java.util.List;
-
+@Entity
 public class ParkingEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "address")
     private String address;
+    @Column(name = "square")
     private int square;
+    @OneToMany(mappedBy = "trucks")
     private List<TruckEntity> trucks;
 
     public ParkingEntity() {

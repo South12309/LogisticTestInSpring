@@ -1,12 +1,24 @@
 package com.aston.logistictestinspring.model;
 
+import javax.persistence.*;
 import java.util.List;
-
+@Entity
 public class TruckEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "model")
     private String model;
+    @Column(name = "number")
     private String number;
+    @ManyToMany
+    @JoinTable( name = "drivers_trucks",
+    joinColumns = @JoinColumn(name = "truck_id"),
+    inverseJoinColumns = @JoinColumn(name = "driver_id"))
     private List<DriverEntity> drivers;
+    @ManyToOne
+    @JoinColumn(name = "parking_id")
     private ParkingEntity parking;
 
     public TruckEntity() {
