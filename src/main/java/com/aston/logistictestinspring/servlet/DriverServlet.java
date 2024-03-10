@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/drivers")
+@RequestMapping("/drivers")
 public class DriverServlet {
     private final DriverService service;
     private final DriverMapper mapper;

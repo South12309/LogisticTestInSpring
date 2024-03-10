@@ -11,5 +11,5 @@ public interface TruckMapper {
     TruckEntity dtoToEntity(TruckDto dto);
     TruckDto entityToDto(TruckEntity entity);
     List<TruckEntity> dtoToEntityList(List<TruckDto> dtos);
-    List<TruckDto> entityToDtoList(List<TruckDto> entities);
+    List<TruckDto> entityToDtoList(List<TruckEntity> entities);
 }

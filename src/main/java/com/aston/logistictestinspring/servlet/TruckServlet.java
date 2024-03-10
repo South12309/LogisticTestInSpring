@@ -1,99 +1,36 @@
 package com.aston.logistictestinspring.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.TruckService;
-import org.example.service.impl.TruckServiceImpl;
-import org.example.servlet.dto.TruckDto;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import com.aston.logistictestinspring.service.TruckService;
+import com.aston.logistictestinspring.servlet.dto.TruckDto;
+import com.aston.logistictestinspring.servlet.mapper.TruckMapper;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
+public class TruckServlet {
+    private final TruckService service;
+    private final TruckMapper mapper;
 
-@WebServlet(name = "TruckServlet", value = "/truck")
-public class TruckServlet extends HttpServlet {
-    private final transient TruckService service;
-    private final ObjectMapper jsonMapper;
-
-    public TruckServlet() {
-        service = new TruckServiceImpl();
-        jsonMapper = new ObjectMapper();
-    }
-
-    public TruckServlet(TruckService service) {
+    public TruckServlet(TruckService service, TruckMapper mapper) {
         this.service = service;
-        jsonMapper = new ObjectMapper();
+        this.mapper = mapper;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            String id = req.getParameter("id");
-            if (id == null) {
-                List<TruckDto> result = TruckDtoMapperImpl.entityToDto(service.findAll());
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            } else {
-                TruckDto result = TruckDtoMapperImpl.entityToDto(service.findById(Integer.parseInt(id)));
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            }
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @GetMapping
+    public List<TruckDto> getAll() {
+        return mapper.entityToDtoList(service.findAll());
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            StringBuilder requestBody = new StringBuilder();
-            BufferedReader reader = req.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            TruckDto truckDto = jsonMapper.readValue(requestBody.toString(), TruckDto.class);
-            TruckDto saveDto = TruckDtoMapperImpl.entityToDto(service.save(TruckDtoMapperImpl.dtoToEntity(truckDto)));
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(jsonMapper.writeValueAsString(saveDto));
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @GetMapping
+    public TruckDto getById(@RequestParam int id) {
+        return mapper.entityToDto(service.findById(id));
     }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            StringBuilder requestBody = new StringBuilder();
-            BufferedReader reader = req.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            TruckDto truckDto = jsonMapper.readValue(requestBody.toString(), TruckDto.class);
-            TruckDto updatedDto = TruckDtoMapperImpl.entityToDto(service.save(TruckDtoMapperImpl.dtoToEntity(truckDto)));
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(jsonMapper.writeValueAsString(updatedDto));
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @PostMapping
+    public TruckDto save(@RequestBody TruckDto dto) {
+        return mapper.entityToDto(service.save(mapper.dtoToEntity(dto)));
     }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            if (!service.delete(id)) {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_OK);
-            }
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @DeleteMapping
+    public void delete(@RequestParam int id) {
+        service.delete(id);
     }
 }

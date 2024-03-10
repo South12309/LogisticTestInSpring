@@ -1,91 +1,39 @@
 package com.aston.logistictestinspring.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.ParkingService;
-import org.example.service.impl.ParkingServiceImpl;
-import org.example.servlet.dto.ParkingDto;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import com.aston.logistictestinspring.model.ParkingEntity;
+import com.aston.logistictestinspring.service.ParkingService;
+import com.aston.logistictestinspring.servlet.dto.ParkingDto;
+import com.aston.logistictestinspring.servlet.mapper.ParkingMapper;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
+@RestController
+@RequestMapping("/parkings")
+public class ParkingServlet {
 
-@WebServlet(name = "ParkingServlet", value = "/parking")
-public class ParkingServlet extends HttpServlet {
+    private final ParkingService service;
+    private final ParkingMapper mapper;
 
-    private final transient ParkingService service;
-    private final ObjectMapper jsonMapper;
-
-    public ParkingServlet() {
-        service = new ParkingServiceImpl();
-        jsonMapper = new ObjectMapper();
-    }
-
-    public ParkingServlet(ParkingService service) {
+    public ParkingServlet(ParkingService service, ParkingMapper mapper) {
         this.service = service;
-        jsonMapper = new ObjectMapper();
+        this.mapper = mapper;
     }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            String id = req.getParameter("id");
-            if (id == null) {
-                List<ParkingDto> result = ParkingDtoMapperImpl.entityToDto(service.findAll());
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            } else {
-                ParkingDto result = ParkingDtoMapperImpl.entityToDto(service.findById(Integer.parseInt(id)));
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            }
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @GetMapping
+    public List<ParkingDto> getAll() {
+        return mapper.entityToDtoList(service.findAll());
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        saveDto(req, resp);
+    @GetMapping
+    public ParkingDto getById(@RequestParam int id) {
+        return mapper.entityToDto(service.findById(id));
     }
-
-    private void saveDto(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            StringBuilder requestBody = new StringBuilder();
-            BufferedReader reader = req.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            ParkingDto parkingDto = jsonMapper.readValue(requestBody.toString(), ParkingDto.class);
-            ParkingDto saveDto = ParkingDtoMapperImpl.entityToDto(service.save(ParkingDtoMapperImpl.dtoToEntity(parkingDto)));
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(jsonMapper.writeValueAsString(saveDto));
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @PostMapping
+    public ParkingDto save(@RequestBody ParkingDto dto) {
+        return mapper.entityToDto(service.save(mapper.dtoToEntity(dto)));
     }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        saveDto(req, resp);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            if (!service.delete(id)) {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_OK);
-            }
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @DeleteMapping
+    public void delete(@RequestParam int id) {
+        service.delete(id);
     }
 }
