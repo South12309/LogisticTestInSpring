@@ -1,14 +1,5 @@
 package org.example.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.DriverService;
-import org.example.service.impl.DriverServiceImpl;
-import org.example.servlet.dto.DriverDto;
-import org.example.servlet.mapper.DriverDtoMapperImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;

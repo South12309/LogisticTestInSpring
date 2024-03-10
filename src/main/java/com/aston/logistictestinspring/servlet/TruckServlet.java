@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.service.TruckService;
 import org.example.service.impl.TruckServiceImpl;
 import org.example.servlet.dto.TruckDto;
-import org.example.servlet.mapper.TruckDtoMapperImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;

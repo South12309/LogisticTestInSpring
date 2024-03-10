@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.service.ParkingService;
 import org.example.service.impl.ParkingServiceImpl;
 import org.example.servlet.dto.ParkingDto;
-import org.example.servlet.mapper.ParkingDtoMapperImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
