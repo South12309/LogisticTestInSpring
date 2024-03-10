@@ -1,84 +1,42 @@
-package org.example.servlet;
+package com.aston.logistictestinspring.servlet;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import com.aston.logistictestinspring.service.DriverService;
+import com.aston.logistictestinspring.servlet.dto.DriverDto;
+import com.aston.logistictestinspring.servlet.mapper.DriverMapper;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
-@WebServlet(name = "DriverServlet", value = "/driver")
-public class DriverServlet extends HttpServlet {
-    private final transient DriverService service;
-    private final ObjectMapper jsonMapper;
+@RestController
+@RequestMapping("/api/v1/drivers")
+public class DriverServlet {
+    private final DriverService service;
+    private final DriverMapper mapper;
 
-    public DriverServlet() {
-        service = new DriverServiceImpl();
-        jsonMapper = new ObjectMapper();
-    }
-
-    public DriverServlet(DriverService service) {
+    public DriverServlet(DriverService service, DriverMapper mapper) {
         this.service = service;
-        jsonMapper = new ObjectMapper();
+        this.mapper = mapper;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            String id = req.getParameter("id");
-            if (id == null) {
-                List<DriverDto> result = DriverDtoMapperImpl.entityToDto(service.findAll());
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            } else {
-                DriverDto result = DriverDtoMapperImpl.entityToDto(service.findById(Integer.parseInt(id)));
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMapper.writeValueAsString(result));
-            }
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @GetMapping
+    protected DriverDto getById(@RequestParam int id) {
+        return mapper.entityToDto(service.findById(id));
+    }
+    @GetMapping
+    protected List<DriverDto> getAll() {
+        return mapper.entityToDtoList(service.findAll());
+    }
+
+    @PostMapping
+    protected DriverDto save(@RequestBody DriverDto driverDto) {
+        return mapper.entityToDto(service.save(mapper.dtoToEntity(driverDto)));
 
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        saveDto(req, resp);
-    }
-
-    public void saveDto(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            StringBuilder requestBody = new StringBuilder();
-            BufferedReader reader = req.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            DriverDto driverDTO = jsonMapper.readValue(requestBody.toString(), DriverDto.class);
-            DriverDto saveDto = DriverDtoMapperImpl.entityToDto(service.save(DriverDtoMapperImpl.dtoToEntity(driverDTO)));
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(jsonMapper.writeValueAsString(saveDto));
-        } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        saveDto(req, resp);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            if (!service.delete(id)) {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_OK);
-            }
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    @DeleteMapping
+    protected void doDelete(@RequestParam int id) {
+        service.delete(id);
     }
 }

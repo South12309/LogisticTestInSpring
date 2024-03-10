@@ -1,4 +1,4 @@
-package org.example.servlet;
+package com.aston.logistictestinspring.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
