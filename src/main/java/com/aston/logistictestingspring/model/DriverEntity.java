@@ -1,7 +1,7 @@
 package com.aston.logistictestingspring.model;
 
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 @Entity
 @Table(name = "drivers")
@@ -16,7 +16,7 @@ public class DriverEntity {
     private String name;
     @Column(name = "patronymic")
     private String patronymic;
-    @ManyToMany(mappedBy = "trucks")
+    @ManyToMany(mappedBy = "drivers")
     private List<TruckEntity> trucks;
 
     public DriverEntity() {

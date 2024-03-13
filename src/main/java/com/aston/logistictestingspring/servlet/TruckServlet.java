@@ -21,7 +21,7 @@ public class TruckServlet {
     public List<TruckDto> getAll() {
         return mapper.entityToDtoList(service.findAll());
     }
-    @GetMapping
+    @GetMapping("/id")
     public TruckDto getById(@RequestParam int id) {
         return mapper.entityToDto(service.findById(id));
     }

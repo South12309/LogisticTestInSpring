@@ -1,6 +1,6 @@
 package com.aston.logistictestingspring.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 @Entity
 public class ParkingEntity {
@@ -12,7 +12,7 @@ public class ParkingEntity {
     private String address;
     @Column(name = "square")
     private int square;
-    @OneToMany(mappedBy = "trucks")
+    @OneToMany(mappedBy = "parking")
     private List<TruckEntity> trucks;
 
     public ParkingEntity() {

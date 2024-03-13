@@ -23,7 +23,7 @@ public class ParkingServlet {
     public List<ParkingDto> getAll() {
         return mapper.entityToDtoList(service.findAll());
     }
-    @GetMapping
+    @GetMapping("/id")
     public ParkingDto getById(@RequestParam int id) {
         return mapper.entityToDto(service.findById(id));
     }

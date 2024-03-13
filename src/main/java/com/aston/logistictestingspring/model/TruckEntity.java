@@ -1,6 +1,6 @@
 package com.aston.logistictestingspring.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 @Entity
 public class TruckEntity {
