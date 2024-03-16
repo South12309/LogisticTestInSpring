@@ -1,11 +1,11 @@
 package com.aston.logistictestingspring.service.impl;
 
-import org.example.model.ParkingEntity;
-import org.example.repository.ParkingEntityRepository;
-import org.example.repository.impl.ParkingEntityRepositoryImpl;
-import org.example.service.ParkingService;
+import com.aston.logistictestingspring.model.ParkingEntity;
+import com.aston.logistictestingspring.repository.ParkingEntityRepository;
+import com.aston.logistictestingspring.service.ParkingService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,22 +15,17 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class ParkingServiceImplTest {
+    @Mock
     private static ParkingEntityRepository repository;
     private static ParkingService service;
     @BeforeAll
     static void beforeAll() {
-        repository = mock(ParkingEntityRepositoryImpl.class);
         service = new ParkingServiceImpl(repository);
     }
 
     @Test
     void save() {
         ParkingEntity parkingEntity = mock(ParkingEntity.class);
-        when(repository.findById(parkingEntity.getId())).thenReturn(Optional.of(parkingEntity));
-        when(repository.update(parkingEntity)).thenReturn(parkingEntity);
-        service.save(parkingEntity);
-        verify(repository, times(1)).update(parkingEntity);
-        when(repository.findById(parkingEntity.getId())).thenReturn(Optional.empty());
         when(repository.save(parkingEntity)).thenReturn(parkingEntity);
         service.save(parkingEntity);
         verify(repository, times(1)).save(parkingEntity);
@@ -46,7 +41,6 @@ class ParkingServiceImplTest {
 
     @Test
     void delete() {
-        when(repository.deleteById(anyInt())).thenReturn(true);
         service.delete(anyInt());
         verify(repository, times(1)).deleteById(anyInt());
     }
@@ -54,7 +48,7 @@ class ParkingServiceImplTest {
     @Test
     void findAll() {
         List<ParkingEntity> parkings = mock(List.class);
-        when(repository.findAll()).thenReturn(Optional.ofNullable(parkings));
+        when(repository.findAll()).thenReturn(parkings);
         service.findAll();
         verify(repository, times(1)).findAll();
     }

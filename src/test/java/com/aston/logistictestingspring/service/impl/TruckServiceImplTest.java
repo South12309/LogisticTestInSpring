@@ -1,36 +1,30 @@
 package com.aston.logistictestingspring.service.impl;
 
-import org.example.model.TruckEntity;
-import org.example.repository.TruckEntityRepository;
-import org.example.repository.impl.TruckEntityRepositoryImpl;
-import org.example.service.TruckService;
+import com.aston.logistictestingspring.model.TruckEntity;
+import com.aston.logistictestingspring.repository.TruckEntityRepository;
+import com.aston.logistictestingspring.service.TruckService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class TruckServiceImplTest {
+    @Mock
     private static TruckEntityRepository repository;
     private static TruckService service;
     @BeforeAll
     static void beforeAll() {
-        repository = mock(TruckEntityRepositoryImpl.class);
         service = new TruckServiceImpl(repository);
     }
 
     @Test
     void save() {
         TruckEntity truckEntity = mock(TruckEntity.class);
-        when(repository.findById(truckEntity.getId())).thenReturn(Optional.of(truckEntity));
-        when(repository.update(truckEntity)).thenReturn(truckEntity);
-        service.save(truckEntity);
-        verify(repository, times(1)).update(truckEntity);
-        when(repository.findById(truckEntity.getId())).thenReturn(Optional.empty());
         when(repository.save(truckEntity)).thenReturn(truckEntity);
         service.save(truckEntity);
         verify(repository, times(1)).save(truckEntity);
@@ -46,7 +40,6 @@ class TruckServiceImplTest {
 
     @Test
     void delete() {
-        when(repository.deleteById(anyInt())).thenReturn(true);
         service.delete(anyInt());
         verify(repository, times(1)).deleteById(anyInt());
     }
@@ -54,7 +47,7 @@ class TruckServiceImplTest {
     @Test
     void findAll() {
         List<TruckEntity> trucks = mock(List.class);
-        when(repository.findAll()).thenReturn(Optional.ofNullable(trucks));
+        when(repository.findAll()).thenReturn(trucks);
         service.findAll();
         verify(repository, times(1)).findAll();
     }
