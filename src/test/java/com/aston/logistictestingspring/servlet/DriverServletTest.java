@@ -17,41 +17,47 @@ class DriverServletTest {
     @Mock
     private static DriverService service;
     private static DriverMapper mapper;
+    private static DriverEntity driverEntity1;
+    private static DriverEntity driverEntity2;
+    private static List<DriverEntity> driverEntities;
+    private static DriverDto driverDto1;
 
     @BeforeAll
     static void beforeAll() {
-        service = mock(DriverServiceImpl.class);
         servlet = new DriverServlet(service, mapper);
+
+        driverEntity1 = new DriverEntity();
+        driverEntity1.setSurname("Surname1");
+        driverEntity1.setName("Name1");
+        driverEntity1.setPatronymic("Patronymic1");
+
+        driverEntity2 = new DriverEntity();
+        driverEntity1.setSurname("Surname2");
+        driverEntity1.setName("Name2");
+        driverEntity1.setPatronymic("Patronymic2");
+
+        driverEntities = List.of(driverEntity1, driverEntity2);
+
+        driverDto1 = new DriverDto();
+        driverDto1.setSurname("Surname1");
+        driverDto1.setName("Name1");
+        driverDto1.setPatronymic("Patronymic1");
+
     }
 
     @Test
     void getById() {
-        DriverEntity driverEntity = new DriverEntity();
-        driverEntity.setSurname("Surname1");
-        driverEntity.setName("Name1");
-        driverEntity.setPatronymic("Patronymic1");
-        when(service.findById(1)).thenReturn(driverEntity);
+        when(service.findById(1)).thenReturn(driverEntity1);
         DriverDto driverDto = servlet.getById(1);
-        Assertions.assertEquals(driverDto.getId(), driverEntity.getId());
-        Assertions.assertEquals(driverDto.getSurname(), driverEntity.getSurname());
-        Assertions.assertEquals(driverDto.getName(), driverEntity.getName());
-        Mockito.verify(mapper, times(1)).entityToDto(driverEntity);
+        Assertions.assertEquals(driverDto.getId(), driverEntity1.getId());
+        Assertions.assertEquals(driverDto.getSurname(), driverEntity1.getSurname());
+        Assertions.assertEquals(driverDto.getName(), driverEntity1.getName());
+        Mockito.verify(mapper, times(1)).entityToDto(driverEntity1);
         Mockito.verify(service, times(1)).findById(1);
     }
 
     @Test
     void getAll() {
-        DriverEntity driverEntity1 = new DriverEntity();
-        driverEntity1.setSurname("Surname1");
-        driverEntity1.setName("Name1");
-        driverEntity1.setPatronymic("Patronymic1");
-
-        DriverEntity driverEntity2 = new DriverEntity();
-        driverEntity1.setSurname("Surname2");
-        driverEntity1.setName("Name2");
-        driverEntity1.setPatronymic("Patronymic2");
-
-        List<DriverEntity> driverEntities = List.of(driverEntity1, driverEntity2);
         when(service.findAll()).thenReturn(driverEntities);
         List<DriverDto> driverDtos = servlet.getAll();
         Mockito.verify(service, times(1)).findAll();
@@ -64,18 +70,7 @@ class DriverServletTest {
 
     @Test
     void save() {
-        DriverEntity driverEntity1 = new DriverEntity();
-        driverEntity1.setSurname("Surname1");
-        driverEntity1.setName("Name1");
-        driverEntity1.setPatronymic("Patronymic1");
-
-        DriverDto driverDto1 = new DriverDto();
-        driverDto1.setSurname("Surname1");
-        driverDto1.setName("Name1");
-        driverDto1.setPatronymic("Patronymic1");
-
         when(service.save(any(DriverEntity.class))).thenReturn(driverEntity1);
-
         DriverDto saved = servlet.save(driverDto1);
         Mockito.verify(service, times(1)).save(any(DriverEntity.class));
         Mockito.verify(mapper, times(1)).dtoToEntity(any(DriverDto.class));
