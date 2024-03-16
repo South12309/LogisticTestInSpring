@@ -16,7 +16,7 @@ public class DriverEntity {
     private String name;
     @Column(name = "patronymic")
     private String patronymic;
-    @ManyToMany(mappedBy = "drivers")
+    @ManyToMany(mappedBy = "drivers", fetch = FetchType.EAGER)
     private List<TruckEntity> trucks;
 
     public DriverEntity() {

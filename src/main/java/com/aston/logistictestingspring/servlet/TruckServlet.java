@@ -7,7 +7,8 @@ import com.aston.logistictestingspring.servlet.mapper.TruckMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("/trucks")
 public class TruckServlet {
     private final TruckService service;
     private final TruckMapper mapper;

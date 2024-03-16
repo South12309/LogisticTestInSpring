@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = TruckMapperWithoutParkingAndDrivers.class)
 public interface DriverMapper {
     DriverEntity dtoToEntity(DriverDto dto);
     DriverDto entityToDto(DriverEntity entity);

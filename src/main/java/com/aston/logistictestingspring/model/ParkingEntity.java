@@ -3,6 +3,7 @@ package com.aston.logistictestingspring.model;
 import jakarta.persistence.*;
 import java.util.List;
 @Entity
+@Table(name = "parkings")
 public class ParkingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +13,7 @@ public class ParkingEntity {
     private String address;
     @Column(name = "square")
     private int square;
-    @OneToMany(mappedBy = "parking")
+    @OneToMany(mappedBy = "parking", fetch = FetchType.EAGER)
     private List<TruckEntity> trucks;
 
     public ParkingEntity() {

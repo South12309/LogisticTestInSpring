@@ -3,6 +3,7 @@ package com.aston.logistictestingspring.model;
 import jakarta.persistence.*;
 import java.util.List;
 @Entity
+@Table(name = "trucks")
 public class TruckEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,12 +13,12 @@ public class TruckEntity {
     private String model;
     @Column(name = "number")
     private String number;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( name = "drivers_trucks",
     joinColumns = @JoinColumn(name = "truck_id"),
     inverseJoinColumns = @JoinColumn(name = "driver_id"))
     private List<DriverEntity> drivers;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parking_id")
     private ParkingEntity parking;
 
