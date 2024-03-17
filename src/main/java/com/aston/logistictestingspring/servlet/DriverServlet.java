@@ -35,7 +35,7 @@ public class DriverServlet {
     }
 
     @DeleteMapping
-    protected void doDelete(@RequestParam int id) {
+    protected void doDelete(@RequestParam("id") int id) {
         service.delete(id);
     }
 }
