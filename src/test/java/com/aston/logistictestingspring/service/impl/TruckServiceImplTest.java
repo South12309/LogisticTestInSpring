@@ -14,11 +14,11 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class TruckServiceImplTest {
-    @Mock
     private static TruckEntityRepository repository;
     private static TruckService service;
     @BeforeAll
     static void beforeAll() {
+        repository = mock(TruckEntityRepository.class);
         service = new TruckServiceImpl(repository);
     }
 

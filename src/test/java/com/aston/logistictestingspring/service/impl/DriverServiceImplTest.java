@@ -13,12 +13,12 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 class DriverServiceImplTest {
-    @Mock
     private static DriverEntityRepository repository;
     private static DriverService service;
 
     @BeforeAll
     static void beforeAll() {
+        repository = mock(DriverEntityRepository.class);
         service = new DriverServiceImpl(repository);
     }
 

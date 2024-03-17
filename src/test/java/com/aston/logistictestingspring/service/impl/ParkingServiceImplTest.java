@@ -15,11 +15,11 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class ParkingServiceImplTest {
-    @Mock
     private static ParkingEntityRepository repository;
     private static ParkingService service;
     @BeforeAll
     static void beforeAll() {
+        repository = mock(ParkingEntityRepository.class);
         service = new ParkingServiceImpl(repository);
     }
 

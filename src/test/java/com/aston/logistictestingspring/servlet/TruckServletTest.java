@@ -1,6 +1,7 @@
 package com.aston.logistictestingspring.servlet;
 
 import com.aston.logistictestingspring.model.TruckEntity;
+import com.aston.logistictestingspring.service.DriverService;
 import com.aston.logistictestingspring.service.TruckService;
 import com.aston.logistictestingspring.servlet.dto.TruckDto;
 
@@ -30,6 +31,7 @@ class TruckServletTest {
 
     @BeforeAll
     static void beforeAll() {
+        service = mock(TruckService.class);
         servlet = new TruckServlet(service, mapper);
         truckEntity1 = new TruckEntity();
         truckEntity1.setModel("Man1");

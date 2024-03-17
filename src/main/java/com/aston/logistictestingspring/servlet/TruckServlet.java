@@ -22,8 +22,8 @@ public class TruckServlet {
     public List<TruckDto> getAll() {
         return mapper.entityToDtoList(service.findAll());
     }
-    @GetMapping("/id")
-    public TruckDto getById(@RequestParam int id) {
+    @GetMapping("/{id}")
+    public TruckDto getById(@PathVariable("id") int id) {
         return mapper.entityToDto(service.findById(id));
     }
     @PostMapping

@@ -1,7 +1,10 @@
 package com.aston.logistictestingspring.servlet;
 
+import com.aston.logistictestingspring.config.DispatcherServletInitializer;
+import com.aston.logistictestingspring.config.SpringConfig;
 import com.aston.logistictestingspring.model.DriverEntity;
 import com.aston.logistictestingspring.model.ParkingEntity;
+import com.aston.logistictestingspring.service.DriverService;
 import com.aston.logistictestingspring.service.ParkingService;
 import com.aston.logistictestingspring.servlet.dto.DriverDto;
 import com.aston.logistictestingspring.servlet.dto.ParkingDto;
@@ -12,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
+@SpringJUnitWebConfig({DispatcherServletInitializer.class, SpringConfig.class})
 class ParkingServletTest {
 
     private static ParkingServlet servlet;
@@ -35,6 +40,7 @@ class ParkingServletTest {
 
     @BeforeAll
     static void beforeAll() {
+        service = mock(ParkingService.class);
         servlet = new ParkingServlet(service, mapper);
         parkingEntity1 = new ParkingEntity();
         parkingEntity1.setAddress("Minvodi");

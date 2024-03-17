@@ -19,11 +19,11 @@ public class DriverServlet {
         this.mapper = mapper;
     }
 
-    @GetMapping("/id")
-    protected DriverDto getById(@RequestParam int id) {
+    @GetMapping("/{id}")
+    protected DriverDto getById(@PathVariable("id") int id) {
         return mapper.entityToDto(service.findById(id));
     }
-    @GetMapping()
+    @GetMapping
     protected List<DriverDto> getAll() {
         return mapper.entityToDtoList(service.findAll());
     }
