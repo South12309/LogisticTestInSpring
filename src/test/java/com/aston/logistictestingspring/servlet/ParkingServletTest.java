@@ -1,96 +1,124 @@
 package com.aston.logistictestingspring.servlet;
 
-import com.aston.logistictestingspring.config.DispatcherServletInitializer;
-import com.aston.logistictestingspring.config.SpringConfig;
 import com.aston.logistictestingspring.model.DriverEntity;
 import com.aston.logistictestingspring.model.ParkingEntity;
 import com.aston.logistictestingspring.service.DriverService;
 import com.aston.logistictestingspring.service.ParkingService;
 import com.aston.logistictestingspring.servlet.dto.DriverDto;
 import com.aston.logistictestingspring.servlet.dto.ParkingDto;
+import com.aston.logistictestingspring.servlet.mapper.DriverMapper;
 import com.aston.logistictestingspring.servlet.mapper.ParkingMapper;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-@SpringJUnitWebConfig({DispatcherServletInitializer.class, SpringConfig.class})
 class ParkingServletTest {
-
-    private static ParkingServlet servlet;
-    @Mock
     private static ParkingService service;
     private static ParkingMapper mapper;
     private static ParkingEntity parkingEntity1;
     private static ParkingEntity parkingEntity2;
     private static List<ParkingEntity> parkingEntities;
+    private static List<ParkingDto> parkingDtos;
     private static ParkingDto parkingDto1;
+    private static ParkingDto parkingDto2;
+    private MockMvc mockMvc;
+    private static ObjectMapper objectMapper;
 
     @BeforeAll
     static void beforeAll() {
-        service = mock(ParkingService.class);
-        servlet = new ParkingServlet(service, mapper);
+        objectMapper = new ObjectMapper();
+
         parkingEntity1 = new ParkingEntity();
         parkingEntity1.setAddress("Minvodi");
         parkingEntity1.setSquare(40);
 
         parkingEntity2 = new ParkingEntity();
-        parkingEntity1.setAddress("Zheleznovodsk");
-        parkingEntity1.setSquare(50);
+        parkingEntity2.setAddress("Zheleznovodsk");
+        parkingEntity2.setSquare(50);
 
         parkingEntities = List.of(parkingEntity1, parkingEntity2);
 
         parkingDto1 = new ParkingDto();
         parkingDto1.setAddress("Minvodi");
         parkingDto1.setSquare(40);
+
+        parkingDto2 = new ParkingDto();
+        parkingDto2.setAddress("Zheleznovodsk");
+        parkingDto2.setSquare(50);
+
+        parkingDtos = List.of(parkingDto1, parkingDto2);
+    }
+
+    @BeforeEach
+    void setUp() {
+        service = mock(ParkingService.class);
+        mapper = mock(ParkingMapper.class);
+        mockMvc = standaloneSetup(new ParkingServlet(service, mapper)).build();
+
+        when(mapper.entityToDto(any(ParkingEntity.class))).thenReturn(parkingDto1);
+        when(mapper.dtoToEntity(any(ParkingDto.class))).thenReturn(parkingEntity1);
+        when(mapper.entityToDtoList(parkingEntities)).thenReturn(parkingDtos);
     }
 
     @Test
-    void getById() {
+    void getById() throws Exception {
         when(service.findById(1)).thenReturn(parkingEntity1);
-        ParkingDto parkingDto = servlet.getById(1);
-        Assertions.assertEquals(parkingDto.getId(), parkingEntity1.getId());
-        Assertions.assertEquals(parkingDto.getAddress(), parkingEntity1.getAddress());
-        Assertions.assertEquals(parkingDto.getId(), parkingEntity1.getSquare());
-        Mockito.verify(mapper, times(1)).entityToDto(parkingEntity1);
-        Mockito.verify(service, times(1)).findById(1);
+        String driverDtoAsString = objectMapper.writeValueAsString(parkingDto1);
+        mockMvc.perform(get("/parkings/{id}", 1))
+                .andExpectAll(status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().string(driverDtoAsString));
+        verify(mapper, times(1)).entityToDto(parkingEntity1);
+        verify(service, times(1)).findById(1);
+
     }
 
     @Test
-    void getAll() {
+    void getAll() throws Exception {
         when(service.findAll()).thenReturn(parkingEntities);
-        List<ParkingDto> parkingDtos = servlet.getAll();
-        Mockito.verify(service, times(1)).findAll();
-        Mockito.verify(mapper, times(1)).entityToDtoList(parkingEntities);
-        Assertions.assertEquals(2, parkingDtos.size());
-        Assertions.assertEquals(parkingDtos.get(0).getId(), parkingEntity1.getId());
-        Assertions.assertEquals(parkingDtos.get(1), parkingEntity2.getId());
+        String driverDtosAsString = objectMapper.writeValueAsString(parkingDtos);
+        mockMvc.perform(get("/parkings"))
+                .andExpectAll(status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().string(driverDtosAsString));
+        verify(service, times(1)).findAll();
+        verify(mapper, times(1)).entityToDtoList(parkingEntities);
+
     }
 
     @Test
-    void save() {
+    void save() throws Exception {
         when(service.save(any(ParkingEntity.class))).thenReturn(parkingEntity1);
-        ParkingDto saved = servlet.save(parkingDto1);
-        Mockito.verify(service, times(1)).save(any(ParkingEntity.class));
-        Mockito.verify(mapper, times(1)).dtoToEntity(any(ParkingDto.class));
-        Mockito.verify(mapper, times(1)).entityToDto(any(ParkingEntity.class));
-        Assertions.assertEquals(saved.getId(), parkingEntity1.getId());
+        String driverDto1AsString = objectMapper.writeValueAsString(parkingDto1);
+        mockMvc.perform(post("/parkings")
+                        .content(driverDto1AsString)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().string(driverDto1AsString));
+        verify(service, times(1)).save(any(ParkingEntity.class));
+        verify(mapper, times(1)).dtoToEntity(any(ParkingDto.class));
+        verify(mapper, times(1)).entityToDto(any(ParkingEntity.class));
+
     }
 
     @Test
-    void doDelete() {
-        Mockito.verify(service, times(1)).delete(anyInt());
+    void doDelete() throws Exception {
+        mockMvc.perform(delete("/parkings").param("id", "1"))
+                .andExpectAll(status().isOk());
+        verify(service, times(1)).delete(anyInt());
     }
 }

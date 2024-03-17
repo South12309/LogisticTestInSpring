@@ -92,7 +92,6 @@ class DriverServletTest {
                         content().string(driverDtosAsString));
         verify(service, times(1)).findAll();
         verify(mapper, times(1)).entityToDtoList(driverEntities);
-
     }
 
     @Test

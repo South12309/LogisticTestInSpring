@@ -32,7 +32,7 @@ public class ParkingServlet {
         return mapper.entityToDto(service.save(mapper.dtoToEntity(dto)));
     }
     @DeleteMapping
-    public void delete(@RequestParam int id) {
+    public void delete(@RequestParam("id") int id) {
         service.delete(id);
     }
 }
