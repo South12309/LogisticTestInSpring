@@ -55,8 +55,6 @@ class DriverServletTest {
         driverDto2.setPatronymic("Patronymic2");
 
         driverDtos = List.of(driverDto1, driverDto2);
-
-
     }
 
     @BeforeEach
