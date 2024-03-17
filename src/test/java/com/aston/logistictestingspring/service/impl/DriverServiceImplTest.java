@@ -5,7 +5,6 @@ import com.aston.logistictestingspring.repository.DriverEntityRepository;
 import com.aston.logistictestingspring.service.DriverService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;

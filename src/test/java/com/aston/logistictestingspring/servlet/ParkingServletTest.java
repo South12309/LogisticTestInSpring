@@ -1,16 +1,13 @@
 package com.aston.logistictestingspring.servlet;
 
-import com.aston.logistictestingspring.model.DriverEntity;
 import com.aston.logistictestingspring.model.ParkingEntity;
-import com.aston.logistictestingspring.service.DriverService;
 import com.aston.logistictestingspring.service.ParkingService;
-import com.aston.logistictestingspring.servlet.dto.DriverDto;
 import com.aston.logistictestingspring.servlet.dto.ParkingDto;
-import com.aston.logistictestingspring.servlet.mapper.DriverMapper;
 import com.aston.logistictestingspring.servlet.mapper.ParkingMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,7 +16,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

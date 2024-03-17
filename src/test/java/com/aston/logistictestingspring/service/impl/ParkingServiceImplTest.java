@@ -5,14 +5,11 @@ import com.aston.logistictestingspring.repository.ParkingEntityRepository;
 import com.aston.logistictestingspring.service.ParkingService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 class ParkingServiceImplTest {
     private static ParkingEntityRepository repository;
